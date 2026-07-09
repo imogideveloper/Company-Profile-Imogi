@@ -17,3 +17,21 @@ class RowDeleteMixin:
     def delete_row(self, request, object_id):
         url_name = f"admin:{self.opts.app_label}_{self.opts.model_name}_delete"
         return redirect(reverse(url_name, args=[object_id]))
+
+
+class ImageCropperAdminMixin:
+    """Memuat Cropper.js di halaman edit admin.
+
+    Saat memilih file gambar di form, muncul jendela crop (geser/zoom/rasio).
+    Berlaku juga untuk inline (galeri) di halaman yang sama.
+    """
+
+    class Media:
+        css = {"all": (
+            "vendor/cropper/cropper.min.css",
+            "admin/cropper-init.css",
+        )}
+        js = (
+            "vendor/cropper/cropper.min.js",
+            "admin/cropper-init.js",
+        )

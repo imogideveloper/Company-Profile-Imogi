@@ -2,13 +2,13 @@ from django.contrib import admin
 from django.utils.html import format_html
 from unfold.admin import ModelAdmin
 
-from imogi.admin_mixins import RowDeleteMixin
+from imogi.admin_mixins import ImageCropperAdminMixin, RowDeleteMixin
 
 from .models import Testimonial
 
 
 @admin.register(Testimonial)
-class TestimonialAdmin(RowDeleteMixin, ModelAdmin):
+class TestimonialAdmin(ImageCropperAdminMixin, RowDeleteMixin, ModelAdmin):
     list_display = ("photo_preview", "name", "company", "rating", "order", "is_active")
     list_display_links = ("name",)
     list_editable = ("order", "is_active")

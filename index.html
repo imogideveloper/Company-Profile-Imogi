@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
   <meta charset="utf-8">
@@ -10,6 +10,27 @@
     content="Imogi Indonesia adalah mitra implementasi dan konsultan ERPNext yang membantu perusahaan mendigitalisasi operasional bisnis: keuangan, inventory, manufaktur, HR, hingga CRM dalam satu sistem terintegrasi.">
   <meta name="keywords"
     content="ERPNext Indonesia, implementasi ERPNext, konsultan ERPNext, Frappe, ERP, software akuntansi, digitalisasi bisnis">
+
+  <!-- Open Graph / social share (preview saat link dibagikan) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Imogi Indonesia">
+  <meta property="og:title" content="Imogi Indonesia — Implementasi &amp; Konsultan ERPNext">
+  <meta property="og:description"
+    content="Mitra implementasi &amp; konsultan ERPNext untuk digitalisasi operasional bisnis Anda — keuangan, inventory, hingga CRM dalam satu sistem.">
+  <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+  <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/assets/img/hero-bg-1.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  {% if GOOGLE_ANALYTICS_ID %}
+  <!-- Google Analytics (GA4) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ GOOGLE_ANALYTICS_ID }}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', '{{ GOOGLE_ANALYTICS_ID }}');
+  </script>
+  {% endif %}
 
   <!-- Favicons -->
   <link href="assets/img/favicon.png" rel="icon">
@@ -58,12 +79,37 @@
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a href="#hero" class="active">Beranda</a></li>
-          <li class="dropdown"><a href="#tabs"><span>Produk Unggulan</span> <i
+          <li class="dropdown dropdown-mega"><a href="#solusi"><span>Produk Unggulan</span> <i
                 class="bi bi-chevron-down toggle-dropdown"></i></a>
             <ul>
-              {% for p in products %}
-              <li><a href="{{ p.get_absolute_url }}">{{ p.name }}</a></li>
-              {% endfor %}
+              <li class="mega-col">
+                <span class="mega-title">Solusi ERPNext</span>
+                <ul>
+                  {% for s in solusi_list %}
+                  <li><a href="#solusi">{{ s.name }}</a></li>
+                  {% endfor %}
+                </ul>
+              </li>
+              <li class="mega-col">
+                <span class="mega-title">Produk IMOGI</span>
+                <ul>
+                  {% for p in products %}
+                  {% if p.coming_soon %}
+                  <li><span class="nav-coming">{{ p.name }} <em>Segera Hadir</em></span></li>
+                  {% else %}
+                  <li><a href="{{ p.get_absolute_url }}">{{ p.name }}</a></li>
+                  {% endif %}
+                  {% endfor %}
+                </ul>
+              </li>
+              <li class="mega-col">
+                <span class="mega-title">IMOGI Digital Solutions</span>
+                <ul>
+                  <li><a href="/produk/danakarya/">Danakarya</a></li>
+                  <li><a href="#">Ronda</a></li>
+                  <li><a href="#">Kraepelin</a></li>
+                </ul>
+              </li>
             </ul>
           </li>
           <li class="dropdown"><a href="#"><span>Imogi School</span> <i
@@ -94,10 +140,10 @@
     <!-- Hero Section -->
     <section id="hero" class="hero section">
 
-      <img src="assets/img/hero-bg-1.png" alt="" class="hero-slide">
-      <img src="assets/img/hero-bg-2.png" alt="" class="hero-slide">
-      <img src="assets/img/hero-bg-3.png" alt="" class="hero-slide">
-      <img src="assets/img/hero-bg-4.png" alt="" class="hero-slide">
+      <img src="assets/img/hero-bg-1.jpg" alt="" class="hero-slide">
+      <img src="assets/img/hero-bg-2.jpg" alt="" class="hero-slide">
+      <img src="assets/img/hero-bg-3.jpg" alt="" class="hero-slide">
+      <img src="assets/img/hero-bg-4.jpg" alt="" class="hero-slide">
 
       <div class="container">
         <div class="row">
@@ -131,37 +177,10 @@
 
       <div class="container-fluid clients-slider-full p-0" data-aos="fade-up" data-aos-delay="100">
 
-        <div class="swiper init-swiper">
-          <script type="application/json" class="swiper-config">
-            {
-              "loop": true,
-              "speed": 2500,
-              "autoplay": {
-                "delay": 0,
-                "disableOnInteraction": false
-              },
-              "allowTouchMove": false,
-              "slidesPerView": "auto",
-              "spaceBetween": 80,
-              "breakpoints": {
-                "320": {
-                  "spaceBetween": 50
-                },
-                "640": {
-                  "spaceBetween": 70
-                },
-                "992": {
-                  "spaceBetween": 100
-                }
-              }
-            }
-          </script>
-          <div class="swiper-wrapper align-items-center">
+        <div class="clients-marquee">
+          <div class="clients-track">
             {% for c in clients %}
-            <div class="swiper-slide"><img src="{{ c.logo.url }}" class="img-fluid" alt="{{ c.name }}"></div>
-            {% endfor %}
-            {% for c in clients %}
-            <div class="swiper-slide"><img src="{{ c.logo.url }}" class="img-fluid" alt="{{ c.name }}"></div>
+            <div class="clients-logo"><img src="{{ c.logo.url }}" alt="{{ c.name }}" loading="lazy"></div>
             {% endfor %}
           </div>
         </div>
@@ -220,26 +239,170 @@
 
     </section><!-- /About Section -->
 
+    <!-- Solusi ERPNext per Industri -->
+    <section id="solusi" class="solusi section">
+
+      <div class="container section-title" data-aos="fade-up">
+        <span class="solusi-eyebrow">Solusi Industri</span>
+        <h2>Solusi ERPNext untuk Setiap Industri</h2>
+        <p>Implementasi ERPNext yang disesuaikan dengan proses &amp; kebutuhan industri Anda</p>
+      </div>
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="solusi-showcase">
+
+          <!-- Pemilih industri -->
+          <div class="solusi-tabs" role="tablist">
+            {% for s in solusi_list %}
+            <button type="button" class="solusi-tab{% if forloop.first %} active{% endif %}"
+              data-target="panel-{{ s.slug }}">
+              <i class="{{ s.icon }}"></i> {{ s.name }}
+            </button>
+            {% endfor %}
+          </div>
+
+          <!-- Panel detail -->
+          <div class="solusi-panels">
+            {% for s in solusi_list %}
+            <div class="solusi-panel{% if forloop.first %} active{% endif %}" id="panel-{{ s.slug }}">
+              <div class="solusi-panel-grid">
+
+                <div class="solusi-visual">
+                  {% if s.image %}
+                  <img src="{{ s.image.url }}" alt="{{ s.name }}" loading="lazy">
+                  {% else %}
+                  <div class="solusi-visual-ph"><i class="{{ s.icon }}"></i></div>
+                  {% endif %}
+                  <div class="solusi-visual-caption">
+                    <h3>{{ s.name }}</h3>
+                    <p>{{ s.subtitle }}</p>
+                  </div>
+                </div>
+
+                <div class="solusi-body">
+                  <p class="solusi-desc">{{ s.description }}</p>
+
+                  {% if s.problem_list or s.solution_list %}
+                  <div class="solusi-cols">
+                    {% if s.problem_list %}
+                    <div class="solusi-col">
+                      <h4 class="solusi-col-head solusi-problem"><i class="bi bi-x-circle-fill"></i> Masalah Umum</h4>
+                      <ul>
+                        {% for p in s.problem_list %}
+                        <li><i class="bi bi-x"></i> {{ p }}</li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                    {% endif %}
+                    {% if s.solution_list %}
+                    <div class="solusi-col">
+                      <h4 class="solusi-col-head solusi-solution"><i class="bi bi-check-circle-fill"></i> Solusi ERPNext
+                      </h4>
+                      <ul>
+                        {% for sol in s.solution_list %}
+                        <li><i class="bi bi-check2"></i> {{ sol }}</li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                    {% endif %}
+                  </div>
+                  {% endif %}
+
+                  {% if s.step_list %}
+                  <div class="solusi-flow">
+                    <span class="solusi-flow-label">Alur Proses</span>
+                    <div class="solusi-flow-steps">
+                      {% for step in s.step_list %}
+                      <span class="solusi-step">{{ step }}</span>{% if not forloop.last %}<i
+                        class="bi bi-arrow-right"></i>{% endif %}
+                      {% endfor %}
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+        </div>
+      </div>
+
+    </section><!-- /Solusi ERPNext -->
+
     <!-- Tabs Section -->
     <section id="tabs" class="tabs section">
 
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Produk Terbaik IMOGI</h2>
-        <p>Aplikasi bisnis berbasis ERPNext yang dapat langsung digunakan untuk operasional harian Anda</p>
-      </div><!-- End Section Title -->
-
+      <!-- Produk Terbaik IMOGI: teks (kiri) + ring (tengah) + karakter (kanan) -->
+      {% if products %}
       <div class="container">
+        <div class="produk-hero">
 
+          <!-- Kolom teks -->
+          <div class="produk-hero-text" data-aos="fade-right">
+            <span class="produk-eyebrow">Produk Unggulan</span>
+            <h2 class="produk-heading">Produk Terbaik IMOGI</h2>
+            <p class="produk-desc">Aplikasi bisnis berbasis ERPNext yang siap pakai untuk operasional harian Anda —
+              satu ekosistem yang saling terhubung.</p>
+            <ul class="produk-benefits">
+              <li><i class="bi bi-check-circle-fill"></i> Terintegrasi penuh antar aplikasi</li>
+              <li><i class="bi bi-check-circle-fill"></i> Berbasis ERPNext yang teruji</li>
+              <li><i class="bi bi-check-circle-fill"></i> Cepat, real-time &amp; siap pakai</li>
+            </ul>
+          </div>
+
+          <!-- Ring produk -->
+          <div class="product-ring-col" data-aos="zoom-in">
+            <div class="product-ring">
+              <div class="product-ring-rotor">
+                {% for p in products %}
+                {% if p.coming_soon %}
+                <span class="product-ring-item is-coming" title="{{ p.name }} — Segera Hadir">
+                  <span class="pri-icon{% if p.logo %} pri-icon-logo{% endif %}">
+                    {% if p.logo %}<img src="{{ p.logo.url }}" alt="{{ p.name }}">{% else %}<i
+                      class="{{ p.icon }}"></i>{% endif %}
+                    <span class="pri-soon">Soon</span>
+                  </span>
+                  <span class="pri-label">{{ p.name }} · Segera Hadir</span>
+                </span>
+                {% else %}
+                <a href="{{ p.get_absolute_url }}" class="product-ring-item" title="{{ p.name }}">
+                  <span class="pri-icon{% if p.logo %} pri-icon-logo{% endif %}">
+                    {% if p.logo %}<img src="{{ p.logo.url }}" alt="{{ p.name }}">{% else %}<i
+                      class="{{ p.icon }}"></i>{% endif %}
+                  </span>
+                  <span class="pri-label">{{ p.name }}</span>
+                </a>
+                {% endif %}
+                {% endfor %}
+              </div>
+              <div class="product-ring-center">
+                <img src="assets/img/logo.png" alt="IMOGI">
+              </div>
+            </div>
+          </div>
+
+          <!-- Karakter 3D + balon -->
+          <div class="product-mascot">
+            <video src="assets/img/mascot.mp4" autoplay muted loop playsinline poster="assets/img/mascot.png"
+              aria-label="Konsultan IMOGI"></video>
+          </div>
+
+        </div>
+      </div>
+      {% endif %}
+
+      {% comment %} Kartu produk disembunyikan sementara — hapus dua tag comment ini untuk memunculkan lagi {% endcomment %}
+      {% comment %}
+      <div class="container">
         <div class="row gy-4">
-
           {% for p in products %}
           <div class="col-lg-4 col-md-6" id="{{ p.anchor_id }}" data-aos="fade-up"
             data-aos-delay="{{ forloop.counter }}00">
             <div class="ready-card h-100">
               <div class="ready-card-head">
-                <div class="ready-icon">{% if p.logo %}<img src="{{ p.logo.url }}" alt="{{ p.name }}"
-                    class="ready-icon-img">{% else %}<i class="{{ p.icon }}"></i>{% endif %}</div>
+                <div class="ready-icon"><i class="{{ p.icon }}"></i></div>
                 <div>
                   <h4>{{ p.name }}</h4>
                   <span class="ready-sub">{{ p.subtitle }}</span>
@@ -259,10 +422,9 @@
             </div>
           </div>
           {% endfor %}
-
         </div>
-
       </div>
+      {% endcomment %}
 
     </section><!-- /Tabs Section -->
 
@@ -453,6 +615,9 @@
         </div>
         <p class="compare-hint"><i class="bi bi-arrow-left-right"></i> Geser tabel untuk lihat perbandingan lengkap</p>
 
+        <!-- Versi kartu (mobile) — diisi otomatis oleh JS dari tabel di atas -->
+        <div class="compare-cards"></div>
+
       </div>
 
     </section><!-- /Portfolio Section -->
@@ -473,7 +638,7 @@
           <!-- Tumpukan foto beranimasi -->
           <div class="atestimonial-stack">
             {% for t in testimonials %}
-            <img class="atestimonial-photo" src="{{ t.photo.url }}" alt="{{ t.name }}">
+            <img class="atestimonial-photo" src="{{ t.photo.url }}" alt="{{ t.name }}" loading="lazy">
             {% endfor %}
           </div>
 
@@ -661,9 +826,15 @@
                 </div>
               </div>
 
-              <div class="contact-field">
-                <label>Email</label>
-                <input type="email" name="email" placeholder="email@perusahaan.com" required="">
+              <div class="contact-field-row">
+                <div class="contact-field">
+                  <label>Email</label>
+                  <input type="email" name="email" placeholder="email@perusahaan.com" required="">
+                </div>
+                <div class="contact-field">
+                  <label>Nomor Telepon</label>
+                  <input type="tel" name="phone" placeholder="0812xxxxxxxx" required="">
+                </div>
               </div>
 
               <div class="contact-field">
@@ -727,7 +898,11 @@
           <h4>Produk</h4>
           <ul>
             {% for p in products %}
+            {% if p.coming_soon %}
+            <li><span class="ft-coming">{{ p.name }} <em>Segera Hadir</em></span></li>
+            {% else %}
             <li><a href="{{ p.get_absolute_url }}">{{ p.name }}</a></li>
+            {% endif %}
             {% endfor %}
           </ul>
         </div>

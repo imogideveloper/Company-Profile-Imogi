@@ -1,6 +1,8 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
+from imogi.image_utils import optimize_imagefield
+
 
 class Testimonial(models.Model):
     name = models.CharField("Nama", max_length=120)
@@ -31,6 +33,10 @@ class Testimonial(models.Model):
     @property
     def empty_stars(self):
         return range(5 - self.rating)
+
+    def save(self, *args, **kwargs):
+        optimize_imagefield(self.photo)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.name} — {self.company}"

@@ -8,7 +8,7 @@ from unfold.widgets import (
     UnfoldAdminTimeWidget,
 )
 
-from imogi.admin_mixins import RowDeleteMixin
+from imogi.admin_mixins import ImageCropperAdminMixin, RowDeleteMixin
 
 from .models import BlogPost, Category
 
@@ -32,7 +32,7 @@ class CategoryAdmin(RowDeleteMixin, ModelAdmin):
 
 
 @admin.register(BlogPost)
-class BlogPostAdmin(RowDeleteMixin, ModelAdmin):
+class BlogPostAdmin(ImageCropperAdminMixin, RowDeleteMixin, ModelAdmin):
     list_display = ("title", "category", "author", "is_published", "published_at")
     list_filter = ("is_published", "category", "published_at")
     list_editable = ("is_published",)

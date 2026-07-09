@@ -2,13 +2,13 @@ from django.contrib import admin
 from django.utils.html import format_html
 from unfold.admin import ModelAdmin
 
-from imogi.admin_mixins import RowDeleteMixin
+from imogi.admin_mixins import ImageCropperAdminMixin, RowDeleteMixin
 
 from .models import Client
 
 
 @admin.register(Client)
-class ClientAdmin(RowDeleteMixin, ModelAdmin):
+class ClientAdmin(ImageCropperAdminMixin, RowDeleteMixin, ModelAdmin):
     list_display = ("logo_preview", "name", "order", "is_active")
     list_display_links = ("name",)
     list_editable = ("order", "is_active")

@@ -3,6 +3,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 
+from imogi.image_utils import optimize_imagefield
+
 
 class Category(models.Model):
     name = models.CharField("Nama kategori", max_length=80, unique=True)
@@ -49,6 +51,7 @@ class BlogPost(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)[:220]
+        optimize_imagefield(self.image)
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):

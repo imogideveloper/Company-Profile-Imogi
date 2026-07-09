@@ -1,5 +1,7 @@
 from django.db import models
 
+from imogi.image_utils import optimize_imagefield
+
 
 class Client(models.Model):
     name = models.CharField("Nama klien", max_length=120)
@@ -15,6 +17,10 @@ class Client(models.Model):
         verbose_name = "Klien"
         verbose_name_plural = "Klien"
         ordering = ["order", "id"]
+
+    def save(self, *args, **kwargs):
+        optimize_imagefield(self.logo)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name

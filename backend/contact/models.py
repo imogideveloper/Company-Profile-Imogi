@@ -5,6 +5,7 @@ class ContactMessage(models.Model):
     name = models.CharField("Nama", max_length=120)
     company = models.CharField("Perusahaan", max_length=150, blank=True)
     email = models.EmailField("Email")
+    phone = models.CharField("Nomor telepon", max_length=30, default="")
     subject = models.CharField("Subjek", max_length=200, blank=True)
     message = models.TextField("Pesan")
     is_read = models.BooleanField("Sudah dibaca", default=False)

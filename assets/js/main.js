@@ -241,32 +241,178 @@
 })();
 
 /**
- * Tabel Perbandingan: di mobile, tampilkan kolom ERPNext lebih dulu
- * (pindah ke posisi kedua, setelah kolom "Fitur"). Di desktop kembali ke kanan.
+ * Tabel Perbandingan -> di HP dibangun jadi kartu per-ERP (tanpa scroll samping).
+ * Kartu dibaca otomatis dari tabel (satu sumber data), ERPNext ditaruh paling atas.
  */
 (function() {
   const table = document.querySelector('.compare-table');
-  if (!table) return;
+  const container = document.querySelector('.compare-cards');
+  if (!table || !container || container.children.length) return;
 
-  const mq = window.matchMedia('(max-width: 767px)');
+  const heads = table.querySelectorAll('thead th');
+  const cols = [];
+  for (let i = 1; i < heads.length; i++) {
+    const th = heads[i];
+    const nameEl = th.querySelector('.cmp-name');
+    const iconEl = th.querySelector('.cmp-icon');
+    cols.push({
+      index: i,
+      name: nameEl ? nameEl.textContent.trim() : th.textContent.trim(),
+      icon: iconEl ? iconEl.outerHTML : '',
+      highlight: th.classList.contains('cmp-highlight'),
+    });
+  }
+  // ERPNext (highlight) di urutan pertama
+  cols.sort((a, b) => (b.highlight ? 1 : 0) - (a.highlight ? 1 : 0));
 
-  function reorder() {
-    table.querySelectorAll('tr').forEach((row) => {
-      const highlight = row.querySelector('.cmp-highlight');
-      if (!highlight) return;
+  const rows = table.querySelectorAll('tbody tr');
+  cols.forEach((col) => {
+    const card = document.createElement('div');
+    card.className = 'compare-card' + (col.highlight ? ' is-highlight' : '');
+    let html = '<div class="compare-card-head">';
+    if (col.highlight) html += '<span class="compare-card-badge"><i class="bi bi-star-fill"></i> Rekomendasi</span>';
+    html += col.icon + '<span class="compare-card-name">' + col.name + '</span></div>';
+    html += '<div class="compare-card-rows">';
+    rows.forEach((tr) => {
+      const cells = tr.children;
+      const feature = cells[0] ? cells[0].textContent.trim() : '';
+      const val = cells[col.index] ? cells[col.index].innerHTML.trim() : '';
+      html += '<div class="compare-card-row"><span class="ccr-feature">' + feature +
+        '</span><span class="ccr-val">' + val + '</span></div>';
+    });
+    html += '</div>';
+    card.innerHTML = html;
+    container.appendChild(card);
+  });
+})();
 
-      if (mq.matches) {
-        // ERPNext -> kolom kedua (tepat setelah "Fitur")
-        if (row.children[1] !== highlight) {
-          row.insertBefore(highlight, row.children[1]);
-        }
-      } else if (row.lastElementChild !== highlight) {
-        // Desktop: ERPNext kembali ke paling kanan
-        row.appendChild(highlight);
-      }
+/**
+ * Solusi ERPNext: tab switcher (pilih industri -> tampil panelnya)
+ */
+(function() {
+  const tabs = document.querySelectorAll('.solusi-tab');
+  if (!tabs.length) return;
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const target = document.getElementById(tab.dataset.target);
+      if (!target) return;
+      document.querySelectorAll('.solusi-tab').forEach((t) => t.classList.remove('active'));
+      document.querySelectorAll('.solusi-panel').forEach((p) => p.classList.remove('active'));
+      tab.classList.add('active');
+      target.classList.add('active');
+    });
+  });
+})();
+
+/**
+ * Klien Kami: marquee CSS anti-macet — gandakan logo secukupnya lalu jalan terus
+ * dengan kecepatan tetap, berapa pun jumlah logo aktif (tak bergantung Swiper).
+ */
+(function() {
+  const marquee = document.querySelector('.clients-marquee');
+  if (!marquee) return;
+  const track = marquee.querySelector('.clients-track');
+  if (!track || !track.children.length) return;
+
+  const SPEED = 60; // piksel per detik
+  const baseHTML = track.innerHTML;
+
+  function build() {
+    track.innerHTML = baseHTML;
+    // gandakan hingga cukup lebar (>= 2x layar) & jumlah set genap agar mulus
+    let sets = 1;
+    while ((track.scrollWidth < marquee.clientWidth * 2 || sets % 2 !== 0) && sets < 40) {
+      track.insertAdjacentHTML('beforeend', baseHTML);
+      sets++;
+    }
+    const half = track.scrollWidth / 2;
+    track.style.setProperty('--marquee-shift', half + 'px');
+    track.style.animationDuration = (half / SPEED) + 's';
+  }
+
+  window.addEventListener('load', build); // setelah gambar termuat -> lebar akurat
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(build, 200);
+  });
+})();
+
+/**
+ * Ring produk: sebar ikon produk merata mengelilingi logo IMOGI.
+ * Posisi dihitung dari jumlah produk & ukuran ring (responsif).
+ */
+(function() {
+  const ring = document.querySelector('.product-ring');
+  if (!ring) return;
+  const rotor = ring.querySelector('.product-ring-rotor');
+  const items = rotor ? Array.from(rotor.querySelectorAll('.product-ring-item')) : [];
+  if (!items.length) return;
+
+  function layout() {
+    const size = ring.clientWidth;
+    const itemSize = items[0].offsetWidth || 88;
+    const radius = size / 2 - itemSize / 2 - 8; // jarak dari tepi
+    const n = items.length;
+
+    // lapisan garis penghubung pusat -> produk
+    let spokes = rotor.querySelector('.product-ring-spokes');
+    if (!spokes) {
+      spokes = document.createElement('div');
+      spokes.className = 'product-ring-spokes';
+      rotor.insertBefore(spokes, rotor.firstChild); // di belakang ikon
+    }
+    spokes.innerHTML = '';
+
+    items.forEach((el, i) => {
+      const angle = (2 * Math.PI / n) * i - Math.PI / 2; // mulai dari atas
+      const x = size / 2 + radius * Math.cos(angle) - itemSize / 2;
+      const y = size / 2 + radius * Math.sin(angle) - itemSize / 2;
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+
+      const spoke = document.createElement('span');
+      spoke.className = 'pri-spoke';
+      spoke.style.left = (size / 2) + 'px';
+      spoke.style.top = (size / 2) + 'px';
+      spoke.style.width = radius + 'px';
+      spoke.style.transform = 'rotate(' + (angle * 180 / Math.PI) + 'deg)';
+      spoke.style.setProperty('--spoke-i', i); // giliran animasi cahaya
+      spokes.appendChild(spoke);
     });
   }
 
-  reorder();
-  mq.addEventListener('change', reorder);
+  layout();
+  window.addEventListener('load', layout);
+  let t;
+  window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(layout, 150); });
+})();
+
+/**
+ * Karakter 3D: berjalan masuk dari kiri saat ring/section terlihat.
+ */
+(function() {
+  const mascot = document.querySelector('.product-mascot');
+  if (!mascot) return;
+  const video = mascot.querySelector('video');
+
+  const trigger = () => {
+    mascot.classList.add('walk-in');
+    if (video) {
+      video.muted = true; // wajib agar autoplay diizinkan browser
+      const p = video.play();
+      if (p && p.catch) p.catch(() => {});
+    }
+  };
+
+  if (!('IntersectionObserver' in window)) { trigger(); return; }
+
+  const io = new IntersectionObserver((entries, obs) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) { trigger(); obs.disconnect(); }
+    });
+  }, { threshold: 0.35 });
+
+  io.observe(mascot);
 })();

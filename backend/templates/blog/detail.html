@@ -2,6 +2,9 @@
 
 {% block title %}{{ post.title }} — Imogi Indonesia{% endblock %}
 {% block description %}{{ post.excerpt }}{% endblock %}
+{% block og_title %}{{ post.title }}{% endblock %}
+{% block og_description %}{{ post.excerpt }}{% endblock %}
+{% block og_image %}{% if post.image %}{{ request.scheme }}://{{ request.get_host }}{{ post.image.url }}{% else %}{{ request.scheme }}://{{ request.get_host }}/assets/img/hero-bg-1.png{% endif %}{% endblock %}
 {% block body_class %}blog-details-page{% endblock %}
 {% block nav_blog_active %}active{% endblock %}
 

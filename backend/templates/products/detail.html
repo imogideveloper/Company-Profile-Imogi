@@ -2,6 +2,9 @@
 
 {% block title %}{{ product.name }} — Imogi Indonesia{% endblock %}
 {% block description %}{{ product.subtitle }} — {{ product.description|truncatewords:24 }}{% endblock %}
+{% block og_title %}{{ product.name }} — {{ product.subtitle }}{% endblock %}
+{% block og_description %}{{ product.description|truncatewords:24 }}{% endblock %}
+{% block og_image %}{% if gallery_images %}{{ request.scheme }}://{{ request.get_host }}{{ gallery_images.0.url }}{% else %}{{ request.scheme }}://{{ request.get_host }}/assets/img/hero-bg-1.png{% endif %}{% endblock %}
 {% block body_class %}product-detail-page{% endblock %}
 
 {% block page_title %}{% endblock %}
@@ -14,8 +17,7 @@
     <div class="pd-head" data-aos="fade-up">
       <a href="/#tabs" class="pd-back"><i class="bi bi-arrow-left"></i> Semua Produk</a>
       <div class="pd-head-row">
-        <span class="pd-icon">{% if product.logo %}<img src="{{ product.logo.url }}" alt="{{ product.name }}"
-            class="pd-icon-img">{% else %}<i class="{{ product.icon }}"></i>{% endif %}</span>
+        <span class="pd-icon"><i class="{{ product.icon }}"></i></span>
         <div>
           <span class="pd-eyebrow">Produk Imogi</span>
           <h1>{{ product.name }}</h1>
@@ -28,9 +30,29 @@
     <div class="pd-grid">
 
       <div class="pd-body" data-aos="fade-up">
-        {% if product.image %}
+        {% if gallery_images|length > 1 %}
         <div class="pd-hero">
-          <img src="{{ product.image.url }}" alt="{{ product.name }}">
+          <div class="swiper init-swiper pd-gallery">
+            <script type="application/json" class="swiper-config">
+              {
+                "loop": true,
+                "speed": 800,
+                "autoplay": { "delay": 3500, "disableOnInteraction": false },
+                "slidesPerView": 1,
+                "pagination": { "el": ".swiper-pagination", "type": "bullets", "clickable": true }
+              }
+            </script>
+            <div class="swiper-wrapper">
+              {% for img in gallery_images %}
+              <div class="swiper-slide"><img src="{{ img.url }}" alt="{{ product.name }}"></div>
+              {% endfor %}
+            </div>
+            <div class="swiper-pagination"></div>
+          </div>
+        </div>
+        {% elif gallery_images %}
+        <div class="pd-hero">
+          <img src="{{ gallery_images.0.url }}" alt="{{ product.name }}">
         </div>
         {% endif %}
         {% if product.detail %}

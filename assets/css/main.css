@@ -392,9 +392,19 @@ h6 {
     color: rgba(255, 255, 255, 0.85);
   }
 
+  .index-page:not(.scrolled) #header .navmenu .nav-coming {
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .index-page:not(.scrolled) #header .navmenu .nav-coming em {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.18);
+  }
+
   .index-page:not(.scrolled) #header .navmenu .dropdown ul a:hover,
   .index-page:not(.scrolled) #header .navmenu .dropdown ul li:hover>a {
-    color: var(--accent-color);
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.1);
   }
 
   /* Setelah scroll: kembali solid putih (teks gelap ikut aturan dasar) */
@@ -1264,6 +1274,60 @@ section,
   background-color: var(--accent-color);
 }
 
+/* Marquee logo klien — anti-macet, jalan terus berapa pun jumlah logo aktif */
+.clients .clients-marquee {
+  width: 100%;
+  overflow: hidden;
+}
+
+.clients .clients-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: clients-scroll 40s linear infinite;
+  will-change: transform;
+}
+
+.clients .clients-logo {
+  flex: 0 0 auto;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clients .clients-logo img {
+  height: 90px;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+  opacity: 0.5;
+  filter: grayscale(100%);
+  transition: 0.3s;
+}
+
+.clients .clients-logo img:hover {
+  filter: none;
+  opacity: 1;
+}
+
+@keyframes clients-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(var(--marquee-shift, 50%) * -1)); }
+}
+
+@media (max-width: 991px) {
+  .clients .clients-logo { padding: 0 35px; }
+}
+
+@media (max-width: 639px) {
+  .clients .clients-logo { padding: 0 25px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clients .clients-track { animation: none; }
+}
+
 /*--------------------------------------------------------------
 # About Section
 --------------------------------------------------------------*/
@@ -1375,6 +1439,447 @@ section,
 /*--------------------------------------------------------------
 # Tabs Section
 --------------------------------------------------------------*/
+/* Produk Terbaik IMOGI: teks (kiri) + ring (tengah) + karakter (kanan) */
+.tabs.section {
+  overflow-x: clip; /* cegah scroll horizontal saat karakter berjalan masuk */
+}
+
+.produk-hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px 22px;
+  flex-wrap: wrap;
+}
+
+.produk-hero-text {
+  flex: 0 1 360px;
+  max-width: 410px;
+}
+
+.produk-eyebrow {
+  display: inline-block;
+  color: var(--accent-color);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  font-size: 13.5px;
+  margin-bottom: 12px;
+}
+
+.produk-heading {
+  font-family: var(--heading-font);
+  font-size: clamp(30px, 3.6vw, 44px);
+  line-height: 1.12;
+  font-weight: 700;
+  color: var(--heading-color);
+  margin: 0 0 16px;
+}
+
+.produk-desc {
+  font-size: 16.5px;
+  line-height: 1.75;
+  color: color-mix(in srgb, var(--default-color), transparent 10%);
+  margin: 0 0 24px;
+}
+
+.produk-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.produk-benefits li {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--heading-color);
+}
+
+.produk-benefits i {
+  color: var(--accent-color);
+  font-size: 20px;
+  flex: 0 0 auto;
+}
+
+.produk-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--accent-color);
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 13px 26px;
+  border-radius: 50px;
+  text-decoration: none;
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--accent-color), transparent 68%);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.produk-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px color-mix(in srgb, var(--accent-color), transparent 55%);
+}
+
+.produk-cta i {
+  transition: transform 0.25s ease;
+}
+
+.produk-cta:hover i {
+  transform: translateX(3px);
+}
+
+.product-ring-col {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+@media (max-width: 1199px) {
+  .produk-hero {
+    flex-direction: column; /* HP/tablet: teks -> ring -> karakter (menumpuk) */
+    gap: 10px;
+  }
+  .produk-hero-text {
+    flex-basis: auto;
+    max-width: 560px;
+    text-align: center;
+  }
+  .produk-benefits {
+    display: inline-grid;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.product-mascot {
+  position: relative;
+  flex: 0 0 auto;
+  margin-left: -50px; /* dekatkan ke ring (putih video melebur via multiply) */
+  opacity: 0; /* muncul saat berjalan masuk */
+}
+
+.product-mascot img,
+.product-mascot video {
+  height: min(505px, 86vw);
+  width: auto;
+  display: block;
+  mix-blend-mode: multiply; /* buang latar putih video agar melebur ke section */
+}
+
+/* karakter meluncur masuk dari kiri saat section terlihat (gerak jalan dari video) */
+.product-mascot.walk-in {
+  animation: mascot-walk-in 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes mascot-walk-in {
+  0%   { transform: translateX(35%); opacity: 0; }
+  100% { transform: translateX(0);   opacity: 1; }
+}
+
+.product-ring-col {
+  position: relative;
+  z-index: 2; /* ring selalu di atas karakter (logo tak tertutup kotak video) */
+  flex: 0 0 auto;
+}
+
+@media (max-width: 1199px) {
+  .product-mascot {
+    margin-left: 0; /* di HP/tablet: tetap center saat menumpuk */
+  }
+  .product-mascot img,
+  .product-mascot video {
+    height: min(340px, 74vw); /* di HP/tablet karakter diperkecil */
+  }
+}
+
+/* Ring produk berputar (logo tiap produk mengorbit logo IMOGI, klik -> detail) */
+.product-ring {
+  position: relative;
+  width: min(480px, 86vw);
+  height: min(480px, 86vw);
+  margin: 4px auto 8px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center,
+      color-mix(in srgb, var(--accent-color), transparent 96%) 60%,
+      transparent 62%);
+}
+
+/* Layar sedang (1200–1399, mis. TV/mirror): kecilkan sedikit agar tetap 3 kolom sejajar */
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .product-ring {
+    width: min(415px, 86vw);
+    height: min(415px, 86vw);
+  }
+  .product-mascot img,
+  .product-mascot video {
+    height: min(450px, 86vw);
+  }
+  .produk-hero-text {
+    flex: 0 1 290px;
+  }
+  .produk-hero {
+    gap: 14px 18px;
+  }
+}
+
+/* lingkaran orbit putus-putus */
+.product-ring::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  border: 1px dashed color-mix(in srgb, var(--accent-color), transparent 82%);
+}
+
+.product-ring-rotor {
+  position: absolute;
+  inset: 0;
+  animation: pr-spin 36s linear infinite;
+}
+
+/* garis penghubung dari pusat ke tiap produk */
+.product-ring-spokes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.pri-spoke {
+  position: absolute;
+  height: 1.5px;
+  margin-top: -0.75px;
+  transform-origin: 0 50%;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--accent-color), transparent 86%); /* garis dasar tipis */
+}
+
+/* cahaya "berjalan" dari pusat menuju produk */
+.pri-spoke::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 32px;
+  height: 3px;
+  margin-top: -1.5px;
+  border-radius: 3px;
+  background: linear-gradient(to right,
+    transparent,
+    color-mix(in srgb, var(--accent-color), transparent 25%) 55%,
+    var(--accent-color));
+  box-shadow: 0 0 8px 1px color-mix(in srgb, var(--accent-color), transparent 55%);
+  opacity: 0;
+  animation: pri-spoke-run 3s linear infinite;
+  animation-delay: calc(var(--spoke-i, 0) * 0.45s);
+}
+
+@keyframes pri-spoke-run {
+  0%   { left: 0;                   opacity: 0; }
+  8%   { opacity: 1; }
+  80%  { left: calc(100% - 32px);  opacity: 1; }
+  92%  { left: calc(100% - 32px);  opacity: 0; }
+  100% { left: 0;                   opacity: 0; }
+}
+
+.product-ring-item {
+  position: absolute;
+  width: 88px;
+  height: 88px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  animation: pr-spin-rev 36s linear infinite;
+}
+
+.pri-icon {
+  width: 74px;
+  height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--accent-color);
+  color: #fff;
+  font-size: 30px;
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--accent-color), transparent 62%);
+  border: 3px solid #fff;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.product-ring-item:hover .pri-icon {
+  transform: scale(1.14);
+  box-shadow: 0 14px 30px color-mix(in srgb, var(--accent-color), transparent 45%);
+}
+
+/* varian logo: lingkaran glossy (bukan putih datar) + cincin navy tipis */
+.pri-icon-logo {
+  width: 84px;
+  height: 84px;
+  padding: 5px;
+  background:
+    radial-gradient(circle at 50% 28%,
+      #ffffff 0%,
+      #f4f7fc 70%,
+      #e9eff8 100%);
+  border: 1px solid color-mix(in srgb, var(--accent-color), transparent 82%);
+  box-shadow:
+    0 12px 26px color-mix(in srgb, var(--accent-color), transparent 64%),
+    inset 0 2px 4px rgba(255, 255, 255, 0.9),
+    inset 0 -7px 14px color-mix(in srgb, var(--accent-color), transparent 90%);
+}
+
+.pri-icon-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  mix-blend-mode: multiply; /* latar putih logo melebur ke lingkaran */
+}
+
+.pri-label {
+  position: absolute;
+  top: calc(100% - 2px);
+  white-space: nowrap;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--accent-color);
+  background: var(--surface-color);
+  padding: 3px 10px;
+  border-radius: 50px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.product-ring-item:hover .pri-label {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Produk "Coming Soon" di ring: tidak bisa diklik, di-dim, ada badge */
+.product-ring-item.is-coming {
+  cursor: default;
+}
+
+.product-ring-item.is-coming .pri-icon {
+  filter: grayscale(70%);
+  opacity: 0.6;
+}
+
+.product-ring-item.is-coming:hover .pri-icon {
+  transform: none; /* tidak membesar saat hover */
+}
+
+.pri-soon {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: var(--accent-color);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 50px;
+  border: 2px solid #fff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+}
+
+/* Item "Coming Soon" di navbar: tidak bisa diklik + tag "Segera" */
+.navmenu .nav-coming {
+  display: block;
+  padding: 10px 20px;
+  font-size: 15px;
+  color: color-mix(in srgb, var(--default-color), transparent 48%);
+  cursor: default;
+  white-space: nowrap;
+}
+
+.navmenu .nav-coming em {
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color), transparent 88%);
+  padding: 1px 7px;
+  border-radius: 50px;
+  margin-left: 5px;
+}
+
+/* berhenti berputar saat kursor di ring -> mudah diklik */
+.product-ring:hover .product-ring-rotor,
+.product-ring:hover .product-ring-item {
+  animation-play-state: paused;
+}
+
+.product-ring-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 34%;
+  height: 34%;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1), inset 0 0 0 6px color-mix(in srgb, var(--accent-color), transparent 92%);
+}
+
+.product-ring-center img {
+  width: 62%;
+  height: auto;
+  object-fit: contain;
+}
+
+.product-ring-hint {
+  text-align: center;
+  font-size: 13.5px;
+  color: color-mix(in srgb, var(--default-color), transparent 40%);
+  margin: 0 0 10px;
+}
+
+.product-ring-hint i {
+  color: var(--accent-color);
+}
+
+@keyframes pr-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pr-spin-rev {
+  to { transform: rotate(-360deg); }
+}
+
+@media (max-width: 575px) {
+  .product-ring-item { width: 70px; height: 70px; }
+  .pri-icon { width: 60px; height: 60px; font-size: 24px; }
+  .pri-icon-logo { width: 66px; height: 66px; padding: 4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-ring-rotor,
+  .product-ring-item { animation: none; }
+  .pri-spoke::after { animation: none; display: none; }
+  .product-mascot { opacity: 1; }
+  .product-mascot.walk-in { animation: none; }
+}
+
 .tabs .nav-tabs {
   border: 0;
 }
@@ -2594,34 +3099,102 @@ section,
   margin: 14px 0 0;
 }
 
+/* Versi kartu (tampil di HP menggantikan tabel — tanpa scroll samping) */
+.compare-cards {
+  display: none;
+}
+
+.compare-card {
+  background: var(--surface-color);
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+  border-radius: 16px;
+  padding: 18px 20px 8px;
+  margin-bottom: 16px;
+}
+
+.compare-card.is-highlight {
+  border: 2px solid var(--accent-color);
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--accent-color), transparent 86%);
+}
+
+.compare-card-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 14px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid color-mix(in srgb, var(--default-color), transparent 92%);
+}
+
+.compare-card-head .cmp-icon {
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.compare-card-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--heading-color);
+}
+
+.compare-card-badge {
+  position: absolute;
+  top: -30px;
+  right: -1px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--accent-color);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 50px 50px 0 0;
+}
+
+.compare-card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--default-color), transparent 95%);
+  font-size: 14px;
+}
+
+.compare-card-row:last-child {
+  border-bottom: 0;
+}
+
+.ccr-feature {
+  color: color-mix(in srgb, var(--default-color), transparent 25%);
+}
+
+.ccr-val {
+  font-weight: 600;
+  text-align: right;
+  color: var(--heading-color);
+}
+
 @media (max-width: 767px) {
-  .compare-table {
-    min-width: 560px;
+
+  .compare-wrap,
+  .compare-hint {
+    display: none;
   }
 
-  .compare-table th,
-  .compare-table td {
-    padding: 11px 12px;
-    font-size: 13px;
-  }
-
-  .compare-table thead th {
-    font-size: 13px;
-  }
-
-  .cmp-icon {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 8px;
+  .compare-cards {
+    display: block;
   }
 
   .cmp-logo {
-    width: 22px;
-    height: 22px;
-  }
-
-  .compare-hint {
-    display: block;
+    width: 24px;
+    height: 24px;
   }
 }
 
@@ -2719,26 +3292,29 @@ section,
   flex-shrink: 0;
   width: 52px;
   height: 52px;
-  border-radius: 10px;
+  border-radius: 13px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 24px;
-  background-color: var(--accent-color);
-  color: var(--contrast-color);
+  background-color: color-mix(in srgb, var(--accent-color), transparent 88%);
+  color: var(--accent-color);
   overflow: hidden;
 }
 
-/* Bila produk punya logo sendiri: kotak jadi putih agar logo warna apa pun terbaca */
+/* Bila produk pakai ikon 3D (gambar): kotak transparan, ikon mengambang & lebih besar */
 .ready-icon:has(.ready-icon-img) {
-  background-color: #fff;
-  border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+  background-color: transparent;
+  border: none;
+  width: 60px;
+  height: 60px;
 }
 
 .ready-icon-img {
-  width: 78%;
-  height: 78%;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.14));
 }
 
 .ready-card h4 {
@@ -3301,6 +3877,27 @@ section,
   color: var(--accent-color);
 }
 
+/* Produk "Coming Soon" di footer: tidak bisa diklik + tag "Segera Hadir" */
+.footer .ft-col .ft-coming {
+  color: color-mix(in srgb, var(--default-color), transparent 55%);
+  font-size: 14.5px;
+  cursor: default;
+}
+
+.footer .ft-col .ft-coming em {
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.12);
+  padding: 1px 7px;
+  border-radius: 50px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
 .footer .ft-contact li {
   display: flex;
   gap: 10px;
@@ -3368,6 +3965,312 @@ section,
   }
 }
 
+/* Pemisah antar-grup di dropdown navbar */
+.navmenu .dropdown ul li.dd-sep {
+  height: 1px;
+  margin: 6px 14px;
+  padding: 0;
+  background-color: color-mix(in srgb, var(--default-color), transparent 86%);
+}
+
+.index-page:not(.scrolled) #header .navmenu .dropdown ul li.dd-sep {
+  background-color: rgba(255, 255, 255, 0.18);
+}
+
+/* --------------------------------------------------------------
+   Solusi ERPNext per Industri (showcase tab)
+-------------------------------------------------------------- */
+.solusi-eyebrow {
+  display: inline-block;
+  color: var(--accent-color);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.solusi-showcase {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+/* Pemilih industri (tabs) */
+.solusi-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.solusi-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border-radius: 50px;
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 88%);
+  background: var(--surface-color);
+  color: var(--heading-color);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.solusi-tab i {
+  font-size: 17px;
+  color: var(--accent-color);
+}
+
+.solusi-tab:hover {
+  border-color: color-mix(in srgb, var(--accent-color), transparent 55%);
+}
+
+.solusi-tab.active {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: #fff;
+}
+
+.solusi-tab.active i {
+  color: #fff;
+}
+
+/* Panel detail */
+.solusi-panel {
+  display: none;
+}
+
+.solusi-panel.active {
+  display: block;
+  animation: solusiFade 0.4s ease;
+}
+
+@keyframes solusiFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.solusi-panel-grid {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  align-items: start;
+  background: var(--surface-color);
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 92%);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06);
+}
+
+/* Sisi gambar — dikunci kotak 1:1 (sama dgn file) agar tampil utuh tanpa crop
+   & konsisten di semua panel, tak ikut tinggi teks. */
+.solusi-visual {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: color-mix(in srgb, var(--accent-color), transparent 92%);
+}
+
+.solusi-visual img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.solusi-visual-ph {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80px;
+  color: color-mix(in srgb, var(--accent-color), transparent 55%);
+}
+
+.solusi-visual-badge {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--accent-color);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 7px 14px;
+  border-radius: 50px;
+  backdrop-filter: blur(4px);
+}
+
+.solusi-visual-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 42px 26px 24px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.78), transparent);
+  color: #fff;
+}
+
+.solusi-visual-caption h3 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: #fff;
+}
+
+.solusi-visual-caption p {
+  font-size: 14px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Sisi konten */
+.solusi-body {
+  padding: 36px 38px;
+}
+
+.solusi-desc {
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: color-mix(in srgb, var(--default-color), transparent 15%);
+  margin: 0 0 26px;
+}
+
+.solusi-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  margin-bottom: 26px;
+}
+
+.solusi-col-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 14px;
+}
+
+.solusi-problem {
+  color: #e03131;
+}
+
+.solusi-solution {
+  color: #2f9e44;
+}
+
+.solusi-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.solusi-col li {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 14.5px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+  color: color-mix(in srgb, var(--default-color), transparent 12%);
+}
+
+.solusi-col li i {
+  font-size: 15px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.solusi-col li i.bi-x {
+  color: #e03131;
+  font-size: 18px;
+  margin-top: 0;
+}
+
+.solusi-col li i.bi-check2 {
+  color: #2f9e44;
+  font-weight: 700;
+}
+
+/* Alur proses */
+.solusi-flow {
+  border-top: 1px solid color-mix(in srgb, var(--default-color), transparent 92%);
+  padding-top: 22px;
+}
+
+.solusi-flow-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--default-color), transparent 45%);
+  margin-bottom: 12px;
+}
+
+.solusi-flow-steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.solusi-step {
+  display: inline-flex;
+  align-items: center;
+  background: color-mix(in srgb, var(--accent-color), transparent 90%);
+  color: var(--accent-color);
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 8px;
+}
+
+.solusi-flow-steps i {
+  color: color-mix(in srgb, var(--default-color), transparent 55%);
+  font-size: 13px;
+}
+
+@media (max-width: 991px) {
+  .solusi-panel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .solusi-visual {
+    aspect-ratio: 16 / 10;
+    min-height: 240px;
+  }
+}
+
+@media (max-width: 575px) {
+  .solusi-cols {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .solusi-body {
+    padding: 28px 24px;
+  }
+
+  .solusi-tab {
+    padding: 9px 16px;
+    font-size: 14px;
+  }
+}
+
 /* --------------------------------------------------------------
    Halaman Detail Produk (/produk/<slug>/)
 -------------------------------------------------------------- */
@@ -3412,14 +4315,17 @@ section,
 }
 
 .pd-icon:has(.pd-icon-img) {
-  background-color: #fff;
-  border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+  background-color: transparent;
+  border: none;
+  width: 80px;
+  height: 80px;
 }
 
 .pd-icon-img {
-  width: 78%;
-  height: 78%;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.16));
 }
 
 .pd-eyebrow {
@@ -3458,12 +4364,59 @@ section,
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.1);
 }
 
+/* Carousel galeri produk (auto-slide) */
+.pd-gallery {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.1);
+  aspect-ratio: 16 / 10;
+}
+
+/* Tinggi eksplisit (tidak bergantung load gambar) supaya Swiper tak collapse */
+.pd-gallery .swiper-wrapper,
+.pd-gallery .swiper-slide {
+  height: 100%;
+}
+
+.pd-gallery .swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.pd-gallery .swiper-pagination {
+  bottom: 12px;
+}
+
+.pd-gallery .swiper-pagination-bullet {
+  width: 9px;
+  height: 9px;
+  background: #fff;
+  opacity: 0.7;
+  transition: width 0.3s, opacity 0.3s;
+}
+
+.pd-gallery .swiper-pagination-bullet-active {
+  width: 22px;
+  border-radius: 5px;
+  background: var(--accent-color);
+  opacity: 1;
+}
+
 .pd-grid {
   display: grid;
   grid-template-columns: 1fr 380px;
   gap: 48px;
   margin-top: 44px;
   align-items: start;
+}
+
+/* Cegah kolom kiri melar mengikuti lebar gambar galeri */
+.pd-grid>.pd-body {
+  min-width: 0;
 }
 
 /* Konten detail (WYSIWYG) */
@@ -5064,4 +6017,80 @@ section,
   padding-left: 5px;
   color: color-mix(in srgb, var(--default-color), transparent 60%);
   font-size: 14px;
+}
+/* --------------------------------------------------------------
+   Mega-menu "Produk Unggulan" (2 kolom biar tidak memanjang ke bawah)
+-------------------------------------------------------------- */
+@media (min-width: 1200px) {
+  .navmenu .dropdown-mega>ul {
+    display: flex;
+    align-items: flex-start; /* kolom rata atas, tidak staggered */
+    gap: 4px;
+    padding: 16px 10px;
+    left: 50%; /* posisikan panel di tengah trigger */
+    transform: translateX(-50%);
+  }
+
+  .navmenu .dropdown-mega .mega-col {
+    min-width: 210px;
+    padding: 0 6px;
+  }
+
+  .navmenu .dropdown-mega .mega-col+.mega-col {
+    border-left: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+  }
+
+  .navmenu .dropdown-mega .mega-title {
+    display: block;
+    padding: 2px 20px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--default-color), transparent 48%);
+  }
+
+  .navmenu .dropdown-mega .mega-col>ul {
+    position: static;
+    visibility: inherit;
+    opacity: 1;
+    display: block;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border-radius: 0;
+    min-width: 0;
+  }
+
+  /* Saat navbar transparan di atas hero */
+  .index-page:not(.scrolled) #header .navmenu .dropdown-mega .mega-title {
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .index-page:not(.scrolled) #header .navmenu .dropdown-mega .mega-col+.mega-col {
+    border-left-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
+@media (max-width: 1199px) {
+  .navmenu .dropdown-mega .mega-title {
+    display: block;
+    padding: 10px 20px 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--default-color), transparent 45%);
+  }
+
+  .navmenu .dropdown-mega .mega-col>ul {
+    display: block;
+    position: static;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
 }

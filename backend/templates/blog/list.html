@@ -14,9 +14,11 @@
     <!-- Header -->
     <div class="blog-index-head" data-aos="fade-up">
       <span class="blog-eyebrow">Blog Imogi</span>
-      <h1>{% if search_query %}Hasil Pencarian{% elif active_category %}{{ active_category.name }}{% else %}Wawasan &amp;
+      <h1>{% if search_query %}Hasil Pencarian{% elif active_category %}{{ active_category.name }}{% else %}Wawasan
+        &amp;
         Insight ERPNext{% endif %}</h1>
-      <p>{% if search_query %}Menampilkan artikel untuk "<strong>{{ search_query }}</strong>".{% else %}Tips, panduan, dan
+      <p>{% if search_query %}Menampilkan artikel untuk "<strong>{{ search_query }}</strong>".{% else %}Tips, panduan,
+        dan
         studi kasus seputar implementasi ERPNext untuk pertumbuhan bisnis Anda.{% endif %}</p>
     </div>
 
@@ -71,7 +73,7 @@
       <article class="blog-card">
         <a href="{{ post.get_absolute_url }}" class="blog-card-img">
           {% if post.image %}
-          <img src="{{ post.image.url }}" alt="{{ post.title }}">
+          <img src="{{ post.image.url }}" alt="{{ post.title }}" loading="lazy">
           {% else %}
           <span class="blog-card-noimg"><i class="bi bi-journal-richtext"></i></span>
           {% endif %}

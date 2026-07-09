@@ -1,0 +1,132 @@
+.imogi-crop-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 20px;
+}
+
+.imogi-crop-overlay.open {
+  display: flex;
+}
+
+.imogi-crop-modal {
+  background: #fff;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 720px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  max-height: 92vh;
+}
+
+.imogi-crop-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid #eee;
+  font-weight: 700;
+  font-size: 15px;
+  color: #1a1a1a;
+}
+
+.imogi-crop-x {
+  border: 0;
+  background: transparent;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  color: #888;
+}
+
+.imogi-crop-x:hover {
+  color: #1a1a1a;
+}
+
+.imogi-crop-stage {
+  background: #111;
+  min-height: 260px;
+  max-height: 60vh;
+  overflow: hidden;
+}
+
+.imogi-crop-img {
+  display: block;
+  max-width: 100%;
+}
+
+.imogi-crop-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 20px;
+  border-top: 1px solid #eee;
+}
+
+.imogi-crop-ratios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.imogi-crop-ratios button {
+  border: 1px solid #d8d8d8;
+  background: #fff;
+  color: #444;
+  padding: 7px 14px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.imogi-crop-ratios button:hover {
+  border-color: #1e3a64;
+}
+
+.imogi-crop-ratios button.active {
+  background: #1e3a64;
+  border-color: #1e3a64;
+  color: #fff;
+}
+
+.imogi-crop-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.imogi-crop-actions button {
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.imogi-crop-cancel {
+  background: #f1f1f1;
+  color: #444;
+}
+
+.imogi-crop-cancel:hover {
+  background: #e4e4e4;
+}
+
+.imogi-crop-apply {
+  background: #1e3a64;
+  color: #fff;
+}
+
+.imogi-crop-apply:hover {
+  background: #16294a;
+}

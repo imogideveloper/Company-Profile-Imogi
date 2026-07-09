@@ -4,3 +4,6 @@ django-unfold==0.99.0
 pillow==12.2.0
 sqlparse==0.5.5
 tzdata==2026.2
+python-dotenv==1.2.2
+# Server produksi (dipakai di server Linux; di Windows tidak dijalankan)
+gunicorn==23.0.0

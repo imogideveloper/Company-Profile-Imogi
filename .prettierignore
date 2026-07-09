@@ -1,0 +1,19 @@
+# ─────────────────────────────────────────────────────────────
+# Template Django: JANGAN diformat Prettier.
+# Prettier mem-wrap baris panjang dan bisa MEMOTONG tag Django
+# ({% ... %} / {{ ... }}) menjadi dua baris. Django tidak bisa
+# membaca tag yang terpisah antar-baris -> halaman error / tag
+# tampil mentah (mis. "{{ cat.name }}"). CSS & JS tetap boleh
+# diformat seperti biasa.
+# ─────────────────────────────────────────────────────────────
+
+# Semua file HTML (semuanya berisi sintaks template Django)
+*.html
+
+# Folder template backend (eksplisit, biar jelas)
+backend/templates/
+
+# Berkas build/vendor (opsional, tidak perlu diformat)
+assets/vendor/
+backend/static/
+node_modules/

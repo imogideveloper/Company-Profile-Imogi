@@ -10,7 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,17 +21,41 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Frontend (static HTML pages + assets) lives one level up, in the project root.
 FRONTEND_DIR = BASE_DIR.parent
 
+# Muat variabel dari file .env (bila ada). Aman bila file tak ada.
+load_dotenv(BASE_DIR / ".env")
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
+def _env_bool(key, default=False):
+    return os.environ.get(key, str(default)).strip().lower() in ("1", "true", "yes", "on")
+
+
+def _env_list(key, default=""):
+    return [v.strip() for v in os.environ.get(key, default).split(",") if v.strip()]
+
+
+# ---------------------------------------------------------------------------
+# Keamanan inti — diambil dari environment (.env). Ada fallback dev agar
+# lokal tetap jalan tanpa .env, tapi di production WAJIB diisi via .env.
+# ---------------------------------------------------------------------------
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ceju-+zcb01c2ik+yx03$c=e13972n&e1s))4sf2_)bktsoar&'
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY",
+    "django-insecure-dev-only-ganti-di-production-lewat-env",
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = _env_bool("DEBUG", True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = _env_list("ALLOWED_HOSTS")
+if DEBUG and not ALLOWED_HOSTS:
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+
+# Di belakang reverse-proxy (nginx) dengan HTTPS.
+CSRF_TRUSTED_ORIGINS = _env_list("CSRF_TRUSTED_ORIGINS")
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 
 # Application definition
@@ -79,6 +106,7 @@ TEMPLATES = [
                 'school.context_processors.materials',
                 'clients.context_processors.clients',
                 'testimonials.context_processors.testimonials',
+                'imogi.context_processors.site_settings',
             ],
         },
     },
@@ -150,21 +178,29 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ---------------------------------------------------------------------------
 # Email
 # ---------------------------------------------------------------------------
-# Dev: emails are printed to the console (terminal running runserver).
-# For production, switch to SMTP and fill the credentials below.
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Kredensial SMTP diambil dari .env. Bila EMAIL_HOST_USER & _PASSWORD terisi,
+# email benar-benar dikirim (SMTP). Bila kosong (mis. saat dev), email cuma
+# dicetak ke console — jadi tak perlu kredensial saat ngoprek lokal.
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = _env_bool('EMAIL_USE_TLS', True)
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.example.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'imogi.indonesia@gmail.com'
-# EMAIL_HOST_PASSWORD = 'your-password'
+if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-DEFAULT_FROM_EMAIL = 'Imogi Indonesia <imogi.indonesia@gmail.com>'
+DEFAULT_FROM_EMAIL = os.environ.get(
+    'DEFAULT_FROM_EMAIL', 'Imogi Indonesia <imogi.indonesia@gmail.com>')
 
-# Where contact-form notifications are sent.
-CONTACT_NOTIFY_EMAIL = 'imogi.indonesia@gmail.com'
+# Tujuan notifikasi form kontak.
+CONTACT_NOTIFY_EMAIL = os.environ.get('CONTACT_NOTIFY_EMAIL', 'imogi.indonesia@gmail.com')
+
+# ---------------------------------------------------------------------------
+# Google Analytics (GA4). Measurement ID dari .env (kosongkan untuk mematikan).
+GOOGLE_ANALYTICS_ID = os.environ.get('GOOGLE_ANALYTICS_ID', 'G-VTW7CBNJWW')
 
 # ---------------------------------------------------------------------------
 # Unfold — tampilan admin modern (branding Imogi Indonesia)
@@ -232,6 +268,11 @@ UNFOLD = {
                         'title': _('Produk'),
                         'icon': 'inventory_2',
                         'link': reverse_lazy('admin:products_product_changelist'),
+                    },
+                    {
+                        'title': _('Solusi ERPNext'),
+                        'icon': 'apps',
+                        'link': reverse_lazy('admin:products_solusierpnext_changelist'),
                     },
                     {
                         'title': _('Klien'),

@@ -1,6 +1,9 @@
-from .models import Product
+from .models import Product, SolusiERPNext
 
 
 def products(request):
-    """Daftar produk aktif, tersedia di semua template (navbar & beranda)."""
-    return {"products": Product.objects.filter(is_active=True)}
+    """Produk & solusi ERPNext aktif — tersedia di semua template (navbar & beranda)."""
+    return {
+        "products": Product.objects.filter(is_active=True),
+        "solusi_list": SolusiERPNext.objects.filter(is_active=True),
+    }

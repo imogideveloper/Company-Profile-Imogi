@@ -28,6 +28,7 @@ def submit(request):
             f"Nama       : {message.name}\n"
             f"Perusahaan : {message.company or '-'}\n"
             f"Email      : {message.email}\n"
+            f"Telepon    : {message.phone or '-'}\n"
             f"Subjek     : {message.subject or '-'}\n\n"
             f"{message.message}\n"
         ),

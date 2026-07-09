@@ -9,6 +9,29 @@
   <meta name="description"
     content="{% block description %}Imogi Indonesia — mitra implementasi dan konsultan ERPNext.{% endblock %}">
 
+  <!-- Open Graph / social share (preview saat link dibagikan) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Imogi Indonesia">
+  <meta property="og:title"
+    content="{% block og_title %}Imogi Indonesia — Implementasi &amp; Konsultan ERPNext{% endblock %}">
+  <meta property="og:description"
+    content="{% block og_description %}Mitra implementasi &amp; konsultan ERPNext untuk digitalisasi operasional bisnis Anda — keuangan, inventory, hingga CRM dalam satu sistem.{% endblock %}">
+  <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+  <meta property="og:image"
+    content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}/assets/img/hero-bg-1.jpg{% endblock %}">
+  <meta name="twitter:card" content="summary_large_image">
+
+  {% if GOOGLE_ANALYTICS_ID %}
+  <!-- Google Analytics (GA4) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ GOOGLE_ANALYTICS_ID }}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', '{{ GOOGLE_ANALYTICS_ID }}');
+  </script>
+  {% endif %}
+
   <!-- Favicons -->
   <link href="assets/img/favicon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
@@ -48,12 +71,37 @@
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a href="/#hero">Beranda</a></li>
-          <li class="dropdown"><a href="/#tabs"><span>Produk Unggulan</span> <i
+          <li class="dropdown dropdown-mega"><a href="/#solusi"><span>Produk Unggulan</span> <i
                 class="bi bi-chevron-down toggle-dropdown"></i></a>
             <ul>
-              {% for p in products %}
-              <li><a href="{{ p.get_absolute_url }}">{{ p.name }}</a></li>
-              {% endfor %}
+              <li class="mega-col">
+                <span class="mega-title">Solusi ERPNext</span>
+                <ul>
+                  {% for s in solusi_list %}
+                  <li><a href="/#solusi">{{ s.name }}</a></li>
+                  {% endfor %}
+                </ul>
+              </li>
+              <li class="mega-col">
+                <span class="mega-title">Produk IMOGI</span>
+                <ul>
+                  {% for p in products %}
+                  {% if p.coming_soon %}
+                  <li><span class="nav-coming">{{ p.name }} <em>Segera Hadir</em></span></li>
+                  {% else %}
+                  <li><a href="{{ p.get_absolute_url }}">{{ p.name }}</a></li>
+                  {% endif %}
+                  {% endfor %}
+                </ul>
+              </li>
+              <li class="mega-col">
+                <span class="mega-title">IMOGI Digital Solutions</span>
+                <ul>
+                  <li><a href="/produk/danakarya/">Danakarya</a></li>
+                  <li><a href="#">Ronda</a></li>
+                  <li><a href="#">Kraepelin</a></li>
+                </ul>
+              </li>
             </ul>
           </li>
           <li class="dropdown"><a href="#"><span>Imogi School</span> <i
@@ -113,7 +161,11 @@
           <h4>Produk</h4>
           <ul>
             {% for p in products %}
+            {% if p.coming_soon %}
+            <li><span class="ft-coming">{{ p.name }} <em>Segera Hadir</em></span></li>
+            {% else %}
             <li><a href="{{ p.get_absolute_url }}">{{ p.name }}</a></li>
+            {% endif %}
             {% endfor %}
           </ul>
         </div>
