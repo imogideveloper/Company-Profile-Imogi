@@ -54,8 +54,11 @@ if DEBUG and not ALLOWED_HOSTS:
 CSRF_TRUSTED_ORIGINS = _env_list("CSRF_TRUSTED_ORIGINS")
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+    # Matikan sementara via .env (SECURE_COOKIES=False) bila situs belum punya
+    # HTTPS -- browser menolak kirim cookie "Secure" lewat http://, jadi login
+    # (CSRF) akan gagal terus sampai SSL terpasang. Nyalakan lagi begitu SSL aktif.
+    SESSION_COOKIE_SECURE = _env_bool("SECURE_COOKIES", True)
+    CSRF_COOKIE_SECURE = _env_bool("SECURE_COOKIES", True)
 
 
 # Application definition

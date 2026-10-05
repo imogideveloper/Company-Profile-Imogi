@@ -29,3 +29,6 @@ Thumbs.db
 
 # ===== Log =====
 *.log
+
+# Hasil build bake_static (dipakai untuk deploy static, bukan source)
+/netlify-dist/
